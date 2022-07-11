@@ -1,4 +1,4 @@
-# Ethereum Data Structures
+# Ethereum Core + Data Structures
 
 A informal documentation of Ethereum core.
 
@@ -7,3 +7,4 @@ Go to a directory and you will find a markdown file and maybe some code dependin
 ## Topics (so far)
 
 - [Recursive Length Prefix (RLP)](https://github.com/markodayan/ethereum-data-structures/tree/master/RLP)
+- [Ethereum JSON-RPC API Specification](https://github.com/markodayan/ethereum-data-structures/tree/master/json-rpc)
