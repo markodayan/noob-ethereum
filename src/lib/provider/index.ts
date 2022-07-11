@@ -134,6 +134,7 @@ class Provider extends HttpClient {
   }
 
   public async seedBlockByNumber(...args: [number, string?]) {
+    // eslint-disable-next-line prefer-const
     let [blockNumber, path] = args;
     if (!blockNumber) throw new Error('No block number specified');
 
