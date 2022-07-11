@@ -127,9 +127,9 @@ class Provider extends HttpClient {
    * Generate JSON file of latest block in specified directory
    * @param {string} path - optional parameter: string path from project root to destination
    */
-  public async seedLatestBlock(path = '/junk/blocks/1559') {
-    const block = this.getLatestBlock();
-    const blockNumber = parseInt((await block).number, 16);
+  public async seedLatestBlock(path = '/src/junk/blocks/1559') {
+    const block = await this.getLatestBlock();
+    const blockNumber = parseInt(block.number, 16);
     exportToJSONFile(block, blockNumber.toString(), path);
   }
 
@@ -138,10 +138,10 @@ class Provider extends HttpClient {
     let [blockNumber, path] = args;
     if (!blockNumber) throw new Error('No block number specified');
 
-    const block = this.getBlockByNumber(blockNumber);
+    const block = await this.getBlockByNumber(blockNumber);
 
     if (!path) {
-      path = blockNumber >= LONDON_HARDFORK_BLOCK ? '/junk/blocks/1559' : '/junk/blocks/legacy';
+      path = blockNumber >= LONDON_HARDFORK_BLOCK ? '/src/junk/blocks/1559' : '/src/junk/blocks/legacy';
     }
 
     exportToJSONFile(block, blockNumber.toString(), path);

@@ -1,5 +1,5 @@
 declare interface IRawBlock {
-  baseFeePerGas: string;
+  baseFeePerGas?: string; // this property will not be here for legacy blocks (prior to London hardfork)
   difficulty: string;
   extraData: string;
   gasLimit: string;
@@ -43,3 +43,42 @@ declare interface IRawTransaction {
   v: string;
   value: string;
 }
+
+/* Tuple to RLP encode (if before block 12965000)  */
+declare type ILegacyBlockTuple = [
+  parentHash: string,
+  sha3Uncles: string,
+  miner: string,
+  stateRoot: string,
+  transactionsRoot: string,
+  receiptsRoot: string,
+  logsBloom: string,
+  difficulty: string,
+  number: string,
+  gasLimit: string,
+  gasUsed: string,
+  time: string,
+  extraData: string,
+  mixHash: string,
+  nonce: string
+];
+
+/* Tuple to RLP encode (if after block 12965000)  */
+declare type IPost1559Tuple = [
+  parentHash: string,
+  sha3Uncles: string,
+  miner: string,
+  stateRoot: string,
+  transactionsRoot: string,
+  receiptsRoot: string,
+  logsBloom: string,
+  difficulty: string,
+  number: string,
+  gasLimit: string,
+  gasUsed: string,
+  time: string,
+  extraData: string,
+  mixHash: string,
+  nonce: string,
+  baseFeePerGas: string
+];
