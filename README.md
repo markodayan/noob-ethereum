@@ -1,10 +1,10 @@
-# Ethereum Core + Data Structures
+# JS tools for interacting with Ethereum
 
-A informal documentation of Ethereum core.
+This repo consists of a bunch of useful utilities that will allow you to interact with the Ethereum network.
 
-Go to a directory and you will find a markdown file and maybe some code depending on the topic. My goal is to demystify the complexity of Ethereum (for myself at least).
+This includes easy provider classes to instantiate to fetch and seed blocks for testing or analytics.
 
-## Topics (so far)
-
-- [Recursive Length Prefix (RLP)](https://github.com/markodayan/ethereum-data-structures/tree/master/RLP)
-- [Ethereum JSON-RPC API Specification](https://github.com/markodayan/ethereum-data-structures/tree/master/json-rpc)
+<b>There are also various utils to parse information received from JSON-RPC provider classes.</b> <i>Parsers</i>
+(referring to utils for processing/sanitising raw JSON-RPC response data) are not built into the providers by design
+choice because I would like to give developers the choice around how sanitised they want the JSON-RPC data received to
+be based on whatever their use case is.
