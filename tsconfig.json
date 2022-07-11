@@ -29,7 +29,8 @@
       "@lib/*": ["src/lib/*"],
       "@app": ["src/app/index.ts"],
       "@singleton/*": ["src/singleton/*"],
-      "@constants/*": ["src/constants/*"]
+      "@constants/*": ["src/constants/*"],
+      "@packages/*": ["src/packages/*"]
     }
   },
   "exclude": ["junk"]

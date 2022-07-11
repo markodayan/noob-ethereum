@@ -23,12 +23,12 @@
     "quotes": ["error", "single", { "allowTemplateLiterals": true }],
     "space-before-blocks": ["error"],
     "keyword-spacing": ["error", { "before": true }],
-    "no-console": [
-      "error",
-      {
-        "allow": ["warn", "error"]
-      }
-    ],
+    // "no-console": [
+    //   "error",
+    //   {
+    //     "allow": ["warn", "error"]
+    //   }
+    // ],
     "no-restricted-syntax": [
       "error",
       {
