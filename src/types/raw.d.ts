@@ -44,11 +44,31 @@ declare interface RawLegacyTransaction {
   value: string;
 }
 
-declare interface Raw1559Transaction {
-  accessList: string[]; // new field (EIP-155)
+declare interface Raw2930Transaction {
+  accessList: string[]; // new field (EIP-2930)
   blockHash: string;
   blockNumber: string;
-  chainId: string; // new field (EIP-155)
+  chainId: string; // new field (EIP-2930)
+  from: string;
+  gas: string;
+  gasPrice: string;
+  hash: string;
+  input: string;
+  nonce: string;
+  r: string;
+  s: string;
+  v: string;
+  to: string;
+  transactionIndex: string;
+  type: string;
+  value: string;
+}
+
+declare interface Raw1559Transaction {
+  accessList: string[];
+  blockHash: string;
+  blockNumber: string;
+  chainId: string;
   from: string;
   gas: string;
   gasPrice: string;

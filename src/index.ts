@@ -4,16 +4,16 @@ const { provider } = new Provider('infura', process.env.INFURA_PROJECT_ID as str
 
 // provider.getLatestBlock().then((block) => {
 //   const blockNumber = parseInt(block.number, 16);
-//   exportToJSONFile(block, blockNumber.toString(), '/src/junk/blocks/1559');
+//   exportToJSONFile(block, blockNumber.toString(), '/src/seeder/blocks/1559');
 // });
 
 // provider.seedLatestBlock();
-provider.seedBlockByNumber(12964800);
+provider.seedBlockByNumber(15122162);
 // provider.seedBlockByNumber(400000);
 
 // provider.getBlockByNumber(12_964_760).then((block) => {
 //   const blockNumber = parseInt(block.number, 16);
-//   exportToJSONFile(block, blockNumber.toString(), '/src/junk/blocks/legacy');
+//   exportToJSONFile(block, blockNumber.toString(), '/src/seeder/blocks/legacy');
 // });
 
 import createKeccakHash from 'keccak';

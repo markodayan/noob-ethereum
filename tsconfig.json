@@ -33,5 +33,5 @@
       "@packages/*": ["src/packages/*"]
     }
   },
-  "exclude": ["junk"]
+  "exclude": ["junk", "seeder"]
 }
