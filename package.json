@@ -28,6 +28,7 @@
     "dotenv": "^16.0.1",
     "ethereumjs-util": "^7.1.5",
     "keccak": "^3.0.2",
+    "rlp": "^3.0.0",
     "ts-node": "^10.8.2",
     "tsconfig-paths": "^4.0.0"
   },

@@ -138,7 +138,7 @@ class Provider extends HttpClient {
     let [blockNumber, path] = args;
     if (!blockNumber) throw new Error('No block number specified');
 
-    const block = await this.getBlockByNumber(blockNumber);
+    const block = await this.getBlockByNumber(blockNumber, true);
 
     if (!path) {
       path = blockNumber >= LONDON_HARDFORK_BLOCK ? '/src/junk/blocks/1559' : '/src/junk/blocks/legacy';

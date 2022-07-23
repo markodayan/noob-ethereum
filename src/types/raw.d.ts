@@ -17,23 +17,45 @@ declare interface IRawBlock {
   stateRoot: string;
   timestamp: string;
   totalDifficulty: string;
-  transactions: string[] | IRawTransaction[];
+  transactions: string[] | RawTransactions;
   transactionsRoot: string;
   uncles: string[];
 }
 
-declare interface IRawTransaction {
-  accessList: string[];
+declare type RawTransaction = Raw1559Transaction | RawLegacyTransaction;
+
+declare type RawTransactions = (Raw1559Transaction | RawLegacyTransaction)[];
+
+declare interface RawLegacyTransaction {
   blockHash: string;
   blockNumber: string;
-  chainId: string;
   from: string;
   gas: string;
   gasPrice: string;
   hash: string;
   input: string;
-  maxFeePerGas: string;
-  maxPriorityFeePerGas: string;
+  nonce: string;
+  r: string;
+  s: string;
+  v: string;
+  to: string;
+  transactionIndex: string;
+  type: string;
+  value: string;
+}
+
+declare interface Raw1559Transaction {
+  accessList: string[]; // new field (EIP-155)
+  blockHash: string;
+  blockNumber: string;
+  chainId: string; // new field (EIP-155)
+  from: string;
+  gas: string;
+  gasPrice: string;
+  hash: string;
+  input: string;
+  maxFeePerGas: string; // new field (EIP-1559)
+  maxPriorityFeePerGas: string; // new field (EIP-1559)
   nonce: string;
   r: string;
   s: string;
