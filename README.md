@@ -1,10 +1,43 @@
-# JS tools for interacting with Ethereum
+<div align="center">
+<br />
+    <img src="./assets/ethereum.png" alt="Ethereum" width="80" >
 
-This repo consists of a bunch of useful utilities that will allow you to interact with the Ethereum network.
+<br />
+  <h2 align="center">Ethereum-Tools</h2>
+  <p align="center">
+    JavaScript utilities to help you understand how Ethereum works
+    <br />
+    <!-- <a href="https://github.com/othneildrew/Best-README-Template"><strong>Explore the docs »</strong></a>
+    <br /> -->
+    <!-- <br /> -->
+    <!-- <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a> -->
+    ·
+    <a href="https://github.com/markodayan/ethereum-tools/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/othneildrew/ethereum-tools/issues">Request Feature</a>
+  </p>
+</div>
 
-This includes easy provider classes to instantiate to fetch and seed blocks for testing or analytics.
+<br />
 
-<b>There are also various utils to parse information received from JSON-RPC provider classes.</b> <i>Parsers</i>
-(referring to utils for processing/sanitising raw JSON-RPC response data) are not built into the providers by design
-choice because I would like to give developers the choice around how sanitised they want the JSON-RPC data received to
-be based on whatever their use case is.
+<!-- ABOUT THE PROJECT -->
+
+# About The Project
+
+This repository was made to provide various utilities for interacting with Ethereum along with implementation of methods
+highlighting crucial tasks conducted by in the permissionless environment inherent with blockchain networks (such as
+producing and verifying Merkle proofs).
+
+The goal of this repository is to educate developers about how various aspects of Ethereum (and blockchain protocols in
+general) work and to provide some useful tools to make your developer experience less frustrating with interacting with
+Ethereum or learning how certain complicated aspects of the protocol work.
+
+<br />
+
+<!-- CONTACT -->
+
+# Contact
+
+Mark Odayan - [@mark_mkzo](https://twitter.com/mark_mkzo)
+
+<p align="right">(<a href="#top">back to top</a>)</p>

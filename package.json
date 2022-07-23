@@ -1,5 +1,5 @@
 {
-  "name": "ethereum-experiments",
+  "name": "ethereum-tools",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -21,7 +21,7 @@
     "node": ">=16.6.0"
   },
   "keywords": [],
-  "author": "",
+  "author": "Mark Odayan",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.27.2",
@@ -29,6 +29,7 @@
     "ethereumjs-util": "^7.1.5",
     "ethers": "^5.6.9",
     "keccak": "^3.0.2",
+    "merkle-patricia-tree": "^4.2.4",
     "rlp": "^3.0.0",
     "ts-node": "^10.8.2",
     "tsconfig-paths": "^4.0.0"

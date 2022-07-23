@@ -22,9 +22,9 @@ declare interface IRawBlock {
   uncles: string[];
 }
 
-declare type RawTransaction = Raw1559Transaction | RawLegacyTransaction;
+declare type RawTransaction = RawLegacyTransaction | Raw2930Transaction | Raw1559Transaction;
 
-declare type RawTransactions = (Raw1559Transaction | RawLegacyTransaction)[];
+declare type RawTransactions = (RawLegacyTransaction | Raw2930Transaction | Raw1559Transaction)[];
 
 declare interface RawLegacyTransaction {
   blockHash: string;
