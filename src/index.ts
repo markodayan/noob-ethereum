@@ -2,13 +2,8 @@ import { Provider } from '@src/packages';
 
 const { provider } = new Provider('infura', process.env.INFURA_PROJECT_ID as string);
 
-// provider.getLatestBlock().then((block) => {
-//   const blockNumber = parseInt(block.number, 16);
-//   exportToJSONFile(block, blockNumber.toString(), '/src/seeder/blocks/1559');
-// });
-
-// provider.seedLatestBlock();
-provider.seedBlockByNumber(15122162);
+// provider.seedLatestBlock(true);
+provider.seedBlockByNumber(15122165, false);
 // provider.seedBlockByNumber(400000);
 
 // provider.getBlockByNumber(12_964_760).then((block) => {

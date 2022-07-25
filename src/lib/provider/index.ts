@@ -124,27 +124,32 @@ class Provider extends HttpClient {
   }
 
   /**
-   * Generate JSON file of latest block in specified directory
-   * @param {string} path - optional parameter: string path from project root to destination
+   * Generate JSON file of latest block
+   * @param {boolean} verbose - flag to specify fetching full tx objects or just their hashes
+   * @param {string} path - optional parameter to specify path from project root where to save JSON file
    */
-  public async seedLatestBlock(path = '/src/seeder/blocks/1559') {
-    const block = await this.getLatestBlock();
+  public async seedLatestBlock(verbose = false, path = '/src/seeder/blocks/1559') {
+    const block = await this.getLatestBlock(verbose);
     const blockNumber = parseInt(block.number, 16);
     exportToJSONFile(block, blockNumber.toString(), path);
   }
 
-  public async seedBlockByNumber(...args: [number, string?]) {
-    // eslint-disable-next-line prefer-const
-    let [blockNumber, path] = args;
-    if (!blockNumber) throw new Error('No block number specified');
+  /**
+   * Generate JSON file for a specific block
+   * @param {number} num - decimal number of a block
+   * @param {boolean} verbose - flag to specify fetching full tx objects or just their hashes
+   * @param {string} path - optional parameter to specify path from project root where to save JSON file
+   */
+  public async seedBlockByNumber(num: number, verbose = false, path?: string) {
+    if (!num) throw new Error('No block number specified');
 
-    const block = await this.getBlockByNumber(blockNumber, true);
+    const block = await this.getBlockByNumber(num, verbose);
 
     if (!path) {
-      path = blockNumber >= LONDON_HARDFORK_BLOCK ? '/src/seeder/blocks/1559' : '/src/seeder/blocks/legacy';
+      path = num >= LONDON_HARDFORK_BLOCK ? '/src/seeder/blocks/1559' : '/src/seeder/blocks/legacy';
     }
 
-    exportToJSONFile(block, blockNumber.toString(), path);
+    exportToJSONFile(block, num.toString(), path);
   }
 }
 

@@ -38,6 +38,28 @@ Currently, you can:
 - Seed blocks into JSON files for later use.
 - Verify merkle roots for block header or transaction tries.
 
+## Provider Use
+
+You can instantiate a provider (using the `'infura'` or `'alchemy'` 1st argument followed by your API key from whichever
+service):
+
+```typescript
+import { Provider } from '@src/packages';
+
+const { provider } = new Provider('infura', process.env.INFURA_PROJECT_ID);
+
+/* Fetch latest block */
+const block = await provider.getLatestBlock();
+/* Fetch block by number */
+const query = await provider.getBlockByNumber(12_964_760);
+
+/* Seed latest block to JSON file (include full transaction objects) */
+provider.seedLatestBlock(true, '/src/<my_dest_directory>');
+
+/* Seed block by number to JSON file (only include transaction hashes - preferable if you are not interested in transaction data) */
+provider.seedLatestBlock(false, 12_964_760, '/src/<my_dest_directory>');
+```
+
 # Other Dependencies
 
 There are various parts of this repo that leave implementation of lower-level data structures to
