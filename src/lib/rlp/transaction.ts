@@ -99,6 +99,7 @@ function serialiseTransactions(arr: RawTransactions): Buffer[] {
  */
 function calculateTransactionHash(tx: RawTransaction): string {
   const serialised = serialiseTransaction(tx);
+
   return '0x' + createKeccakHash('keccak256').update(serialised).digest('hex');
 }
 
@@ -147,14 +148,23 @@ async function insertTransactions(arr: Buffer[]) {
   for (let i = 0; i < arr.length; i++) {
     await trie.put(rlp.encode(i), arr[i]);
   }
+}
 
+insertTransactions(serialisedTxs).then(() => {
   const expected = testBlock.transactionsRoot;
   const calculated = '0x' + trie.root.toString('hex');
 
   console.log(expected, calculated, expected === calculated);
-}
 
-insertTransactions(serialisedTxs).then();
+  trie.get(rlp.encode(0)).then((x) => {
+    const data = rlp.decode(x) as Buffer[];
+    console.log(data);
+
+    // convert tuple fields from buffer to hex strings
+    let hexed = data.map((elem) => '0x' + elem.toString('hex'));
+    console.log(hexed);
+  });
+});
 
 export {
   serialiseTransaction,
