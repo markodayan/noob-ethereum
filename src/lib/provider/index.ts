@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import * as dotenv from 'dotenv';
 dotenv.config();
-import * as utils from '@lib/utils/conversion';
+import { hexify } from '@lib/utils/conversion';
 import { exportToJSONFile } from '@lib/utils/export';
 import { LONDON_HARDFORK_BLOCK } from '@src/constants';
 
@@ -88,7 +88,7 @@ class Provider extends HttpClient {
       {
         jsonrpc: '2.0',
         method: 'eth_getBlockByNumber',
-        params: ['0x' + blockNumber.toString(16), verbose],
+        params: [hexify(blockNumber), verbose],
         id: 0,
       },
       this.config

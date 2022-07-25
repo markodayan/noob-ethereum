@@ -3,6 +3,8 @@ import { Trie } from '@ethereumjs/trie';
 import { utils } from 'ethers';
 import createKeccakHash from 'keccak';
 
+import { hexify } from '@lib/utils/conversion';
+
 /* ---------------------------- Internal Methods ---------------------------------- */
 
 function convertToByteArray(field: string | any[]): any {
@@ -100,7 +102,7 @@ function serialiseTransactions(arr: RawTransactions): Buffer[] {
 function calculateTransactionHash(tx: RawTransaction): string {
   const serialised = serialiseTransaction(tx);
 
-  return '0x' + createKeccakHash('keccak256').update(serialised).digest('hex');
+  return hexify(createKeccakHash('keccak256').update(serialised).digest('hex'));
 }
 
 /**
@@ -152,7 +154,7 @@ async function insertTransactions(arr: Buffer[]) {
 
 insertTransactions(serialisedTxs).then(() => {
   const expected = testBlock.transactionsRoot;
-  const calculated = '0x' + trie.root.toString('hex');
+  const calculated = hexify(trie.root);
 
   console.log(expected, calculated, expected === calculated);
 
@@ -161,7 +163,7 @@ insertTransactions(serialisedTxs).then(() => {
     console.log(data);
 
     // convert tuple fields from buffer to hex strings
-    let hexed = data.map((elem) => '0x' + elem.toString('hex'));
+    let hexed = data.map((elem) => hexify(elem));
     console.log(hexed);
   });
 });
