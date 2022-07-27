@@ -61,7 +61,6 @@ function serialiseTransaction(tx: RawTransaction): Buffer {
     }
     /* EIP-2930 transaction */
     case '0x1': {
-      // Need to figure out how to encode accessList string array
       const { chainId, nonce, gasPrice, gas, to, value, input, accessList, v, r, s } = tx as Raw2930Transaction;
       const tuple = [chainId, nonce, gasPrice, gas, to, value, input, accessList, v, r, s];
       const byteTuple = toByteTuple(tuple);
@@ -149,22 +148,36 @@ const serialisedTxs = serialiseTransactions(testBlock.transactions);
 async function insertTransactions(arr: Buffer[]) {
   for (let i = 0; i < arr.length; i++) {
     await trie.put(rlp.encode(i), arr[i]);
+
+    if (i === 0) break;
   }
+
+  const path = await trie.findPath(rlp.encode(0));
+  const decoded = rlp.decode(path.node!._value);
+  const hexified = (decoded as Buffer[]).map((elem) => hexify(elem));
+  console.log(path);
+  console.log(decoded);
+  console.log(hexified);
 }
 
 insertTransactions(serialisedTxs).then(() => {
   const expected = testBlock.transactionsRoot;
   const calculated = hexify(trie.root);
 
-  console.log(expected, calculated, expected === calculated);
+  // console.log(expected, calculated, expected === calculated);
 
-  trie.get(rlp.encode(0)).then((x) => {
+  trie.get(rlp.encode(310)).then((x) => {
+    // console.log(x);
     const data = rlp.decode(x) as Buffer[];
-    console.log(data);
+    // console.log(data);
 
     // convert tuple fields from buffer to hex strings
     let hexed = data.map((elem) => hexify(elem));
-    console.log(hexed);
+    // console.log(hexed);
+  });
+
+  trie.findPath(rlp.encode(0)).then((y) => {
+    console.log(y);
   });
 });
 

@@ -3,6 +3,7 @@
     "files": true
   },
   "compilerOptions": {
+    "declaration": true,
     "target": "es5",
     "module": "commonjs",
     "strict": true,
@@ -33,5 +34,5 @@
       "@packages/*": ["src/packages/*"]
     }
   },
-  "exclude": ["junk", "seeder"]
+  "exclude": ["junk", "seeder", "dist"]
 }

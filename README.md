@@ -3,7 +3,7 @@
     <img src="./assets/ethereum.png" alt="Ethereum" width="80" >
 
 <br />
-  <h2 align="center">Ethereum-Tools</h2>
+  <h2 align="center">Noob-Ethereum</h2>
   <p align="center">
     JavaScript utilities to help you understand how Ethereum works
     <br />
@@ -12,9 +12,9 @@
     <!-- <br /> -->
     <!-- <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a> -->
     ·
-    <a href="https://github.com/markodayan/ethereum-tools/issues">Report Bug</a>
+    <a href="https://github.com/markodayan/noob-ethereum/issues">Report Bug</a>
     ·
-    <a href="https://github.com/othneildrew/ethereum-tools/issues">Request Feature</a>
+    <a href="https://github.com/markodayan/noob-ethereum/issues">Request Feature</a>
   </p>
 </div>
 
@@ -44,7 +44,7 @@ You can instantiate a provider (using the `'infura'` or `'alchemy'` 1st argument
 service):
 
 ```typescript
-import { Provider } from '@src/packages';
+import { Provider } from 'noob-ethereum';
 
 const { provider } = new Provider('infura', process.env.INFURA_PROJECT_ID);
 
