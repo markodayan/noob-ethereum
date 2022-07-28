@@ -2,7 +2,7 @@
   "name": "noob-ethereum",
   "version": "1.0.0",
   "description": "A simple Ethereum library",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "lint": "eslint . --ext .ts",
     "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
@@ -13,6 +13,16 @@
     "debug": "ts-node -r tsconfig-paths/register",
     "prepublish": "npm run build"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/markodayan/noob-ethereum.git"
+  },
+  "keywords": [
+    "cryptography",
+    "ethereum",
+    "rlp",
+    "data-verification"
+  ],
   "husky": {
     "hooks": {
       "pre-commit": "npm run prettier-format && npm run lint"
@@ -21,7 +31,6 @@
   "engines": {
     "node": ">=16.6.0"
   },
-  "keywords": [],
   "author": "Mark Odayan",
   "license": "ISC",
   "dependencies": {
