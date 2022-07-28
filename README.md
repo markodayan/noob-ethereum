@@ -38,6 +38,14 @@ Currently, you can:
 - Seed blocks into JSON files for later use.
 - Verify merkle roots for block header or transaction tries.
 
+# Getting Started
+
+Install the package with:
+
+```bash
+npm i noob-ethereum
+```
+
 ## Provider Use
 
 You can instantiate a provider (using the `'infura'` or `'alchemy'` 1st argument followed by your API key from whichever
