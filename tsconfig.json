@@ -30,8 +30,8 @@
       "@lib/*": ["lib/*"],
       "@constants/*": ["constants/*"],
       "@packages/*": ["packages/*"]
-    }
-    // "typeRoots": ["./node_modules/@types", "./@types"]
+    },
+    "typeRoots": ["./node_modules/@types", "./@types"]
   },
   "exclude": ["dist", "junk", "seeder/**/*"]
 }
