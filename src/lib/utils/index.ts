@@ -1,4 +1,4 @@
-import { hexify } from './conversion';
+import { hexify, decimal, toISO, toGwei } from './conversion';
 import { exportToJSONFile } from './export';
 
-export { hexify, exportToJSONFile };
+export { hexify, decimal, toISO, toGwei, exportToJSONFile };
