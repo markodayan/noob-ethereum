@@ -50,9 +50,9 @@ class Provider extends HttpClient {
   private constructor(company: string, key: string) {
     const url =
       company === 'infura'
-        ? `https://${process.env.INFURA_URL}${key}#
+        ? `https://mainnet.infura.io/v3/${key}#
 `
-        : `https://${process.env.ALCHEMY_URL}${key}`;
+        : `https://eth-mainnet.alchemyapi.io/v2/${key}`;
 
     super(url);
     this.config = config;

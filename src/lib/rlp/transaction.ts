@@ -1,9 +1,8 @@
 import { rlp } from 'ethereumjs-util';
-import { Trie } from '@ethereumjs/trie';
 import { utils } from 'ethers';
 import createKeccakHash from 'keccak';
 
-import { hexify } from '@lib/utils/conversion';
+import { hexify } from '../utils/conversion';
 
 /* ---------------------------- Internal Methods ---------------------------------- */
 
@@ -134,52 +133,6 @@ function calculateBlockTransactionHashes(block: IRawBlock): string[] {
 
   return calculateTransactionHashes(block.transactions as RawTransactions);
 }
-
-/* ---------------------------- Local Testing ---------------------------------- */
-
-import legacyBlock from '@src/seeder/blocks/legacy/10467135.json';
-import eip1559Block from '@src/seeder/blocks/1559/15122054.json';
-
-const trie = new Trie();
-
-const testBlock = legacyBlock;
-const serialisedTxs = serialiseTransactions(testBlock.transactions);
-
-async function insertTransactions(arr: Buffer[]) {
-  for (let i = 0; i < arr.length; i++) {
-    await trie.put(rlp.encode(i), arr[i]);
-
-    if (i === 0) break;
-  }
-
-  const path = await trie.findPath(rlp.encode(0));
-  const decoded = rlp.decode(path.node!._value);
-  const hexified = (decoded as Buffer[]).map((elem) => hexify(elem));
-  console.log(path);
-  console.log(decoded);
-  console.log(hexified);
-}
-
-insertTransactions(serialisedTxs).then(() => {
-  const expected = testBlock.transactionsRoot;
-  const calculated = hexify(trie.root);
-
-  // console.log(expected, calculated, expected === calculated);
-
-  trie.get(rlp.encode(310)).then((x) => {
-    // console.log(x);
-    const data = rlp.decode(x) as Buffer[];
-    // console.log(data);
-
-    // convert tuple fields from buffer to hex strings
-    let hexed = data.map((elem) => hexify(elem));
-    // console.log(hexed);
-  });
-
-  trie.findPath(rlp.encode(0)).then((y) => {
-    console.log(y);
-  });
-});
 
 export {
   serialiseTransaction,

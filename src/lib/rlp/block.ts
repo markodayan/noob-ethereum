@@ -46,14 +46,3 @@ function verifyBlockHeader(block: IRawBlock): boolean {
 }
 
 export { calculateBlockHeader, verifyBlockHeader };
-
-import legacyBlock from '@src/seeder/blocks/legacy/12964874.json';
-const calculated = calculateBlockHeader(legacyBlock);
-console.log(calculated);
-const isValid = verifyBlockHeader(legacyBlock);
-console.log(isValid);
-
-// import post1559Block from '@src/seeder/blocks/1559/15122367.json';
-// const calculated = calculateBlockHeader(post1559Block);
-// console.log('calculated block header:', calculated);
-// console.log('is a valid block header:', verifyBlockHeader(post1559Block));
