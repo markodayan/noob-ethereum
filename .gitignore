@@ -5,3 +5,5 @@ coverage
 dump.rdb
 src/junk
 DEV.md
+src/seeder/blocks/1559/*
+src/seeder/blocks/legacy/*
