@@ -128,7 +128,7 @@ class Provider extends HttpClient {
    * @param {boolean} verbose - flag to specify fetching full tx objects or just their hashes
    * @param {string} path - optional parameter to specify path from project root where to save JSON file
    */
-  public async seedLatestBlock(verbose = false, path = '/src/seeder/blocks/1559') {
+  public async seedLatestBlock(verbose = false, path = 'src/seeder/blocks/1559') {
     const block = await this.getLatestBlock(verbose);
     const blockNumber = parseInt(block.number, 16);
     exportToJSONFile(block, blockNumber.toString(), path);
@@ -140,13 +140,13 @@ class Provider extends HttpClient {
    * @param {boolean} verbose - flag to specify fetching full tx objects or just their hashes
    * @param {string} path - optional parameter to specify path from project root where to save JSON file
    */
-  public async seedBlockByNumber(num: number, verbose = false, path?: string) {
+  public async seedBlockByNumber(verbose = false, num: number, path?: string) {
     if (!num) throw new Error('No block number specified');
 
     const block = await this.getBlockByNumber(num, verbose);
 
     if (!path) {
-      path = num >= LONDON_HARDFORK_BLOCK ? '/src/seeder/blocks/1559' : '/src/seeder/blocks/legacy';
+      path = num >= LONDON_HARDFORK_BLOCK ? 'src/seeder/blocks/1559' : 'src/seeder/blocks/legacy';
     }
 
     exportToJSONFile(block, num.toString(), path);

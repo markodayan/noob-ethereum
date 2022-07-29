@@ -9,7 +9,7 @@ import path from 'path';
  */
 function exportToJSONFile(obj: any, filename: string, pathFromRoot: string) {
   const json = JSON.stringify(obj);
-  const filePath = path.join(process.cwd(), pathFromRoot);
+  const filePath = path.join(process.cwd(), pathFromRoot.slice(0));
 
   fs.writeFile(`${filePath}/${filename}.json`, json, (err) => {
     if (err) {

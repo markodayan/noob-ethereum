@@ -49,7 +49,7 @@ exec('npm view noob-ethereum version', (error, stdout, stderr) => {
 
     fs.writeFile(`${dir}/package.json`, json, (err) => {
       if (err) {
-        console.log(`Error writing file: ${filename}.json`, err);
+        console.log(`Error updating package.json`, err);
       } else {
         console.log(`Package version updated to ${file.version} in package.json (${updateType} version update)`);
       }

@@ -61,11 +61,11 @@ const block = await provider.getLatestBlock();
 /* Fetch block by number */
 const query = await provider.getBlockByNumber(12_964_760);
 
-/* Seed latest block to JSON file (include full transaction objects) */
-provider.seedLatestBlock(true, '/src/<my_dest_directory>');
+/* Seed latest block to JSON file (include full transaction objects)  */
+await provider.seedLatestBlock(true, 'src/junk').then();
 
 /* Seed block by number to JSON file (only include transaction hashes - preferable if you are not interested in transaction data) */
-provider.seedLatestBlock(false, 12_964_760, '/src/<my_dest_directory>');
+await provider.seedBlockByNumber(false, 12_964_760, 'src/junk').then();
 ```
 
 # Other Dependencies
