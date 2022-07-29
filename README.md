@@ -85,6 +85,14 @@ in Ethereum.
 
 <br />
 
+<!-- LICENSE -->
+
+# License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 <!-- CONTACT -->
 
 # Contact
