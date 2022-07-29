@@ -55,8 +55,8 @@ function toGwei(exp: string | number | undefined, from: 'wei' | 'ether'): number
       if (typeof exp === 'number') {
         return exp * 10 ** 9;
       } else {
-        const wei = parseInt(exp, 16);
-        return wei * 10 ** 9;
+        const ether = parseInt(exp, 16);
+        return ether * 10 ** 9;
       }
     }
   }

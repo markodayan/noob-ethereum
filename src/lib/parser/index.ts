@@ -14,6 +14,13 @@ function gasUsedRatio(used: string, limit = '0x0'): number {
   return +(ratio * 0.01).toFixed(2);
 }
 
+function getERC20Value(input: string, decimals: number): string[] {
+  const address = '0x' + input.slice(2).slice(8).slice(24, -64);
+  const value = input.slice(2).slice(8).slice(24).slice(40);
+  const amount = parseInt(value, 16) * Math.pow(10, -1 * decimals);
+  return [address, JSON.stringify(amount)];
+}
+
 function standardizeBlock(block: IRawBlock, verbose = false): IStandardizedBlock {
   const standardized: IStandardizedBlock = {
     gasLimit: decimal(block.gasLimit),

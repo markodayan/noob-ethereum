@@ -7,9 +7,9 @@
   "scripts": {
     "lint": "eslint . --ext .ts",
     "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
-    "tspath": "./node_modules/tspath/src/tspath.js",
     "build": "./node_modules/.bin/tsc && tsc-alias",
-    "build-ts-path": "./node_modules/.bin/tsc && npm run tspath",
+    "version-update": "node management/package.js",
+    "publish": "npm run build && npm run version-update",
     "test": "jest --passWithNoTests",
     "dev": "NODE_ENV=development ts-node-dev --files -r tsconfig-paths/register ./src/index.ts",
     "start": "NODE_ENV=production ts-node -r tsconfig-paths/register ./src/index.ts",
