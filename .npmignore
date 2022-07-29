@@ -1,0 +1,6 @@
+dist/seeder/*
+src
+assets
+.github
+.vscode
+management
