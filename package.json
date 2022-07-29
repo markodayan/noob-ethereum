@@ -5,10 +5,11 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "update-erc20": "npm run scripts/tokens.js",
     "lint": "eslint . --ext .ts",
     "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
     "build": "./node_modules/.bin/tsc && tsc-alias",
-    "version-update": "node management/package.js",
+    "version-update": "node scripts/package.js",
     "publish": "npm run build && npm run version-update",
     "test": "jest --passWithNoTests",
     "dev": "NODE_ENV=development ts-node-dev --files -r tsconfig-paths/register ./src/index.ts",
