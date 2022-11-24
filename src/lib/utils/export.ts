@@ -20,4 +20,22 @@ function exportToJSONFile(obj: any, filename: string, pathFromRoot: string) {
   });
 }
 
-export { exportToJSONFile };
+/**
+ * Create Text file from provided data and save to a directory of your choice
+ * @param {any} obj - data (could be a buffer)
+ * @param {string} filename - my_file
+ * @param {string} pathFromRoot - /src/destination_folder
+ */
+function exportToTextFile(obj: any, filename: string, pathFromRoot: string) {
+  const filePath = path.join(process.cwd(), pathFromRoot.slice(0));
+
+  fs.writeFile(`${filePath}/${filename}.txt`, obj, (err) => {
+    if (err) {
+      console.log(`Error writing file: ${filename}.txt`, err);
+    } else {
+      console.log(`Successfully created ${filename}.txt in ${filePath}`);
+    }
+  });
+}
+
+export { exportToJSONFile, exportToTextFile };

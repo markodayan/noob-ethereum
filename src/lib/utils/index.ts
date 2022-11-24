@@ -1,4 +1,5 @@
 import { hexify, decimal, toISO, toGwei } from './conversion';
-import { exportToJSONFile } from './export';
+import { exportToJSONFile, exportToTextFile } from './export';
+import { checksum } from './checksum';
 
-export { hexify, decimal, toISO, toGwei, exportToJSONFile };
+export { hexify, decimal, toISO, toGwei, exportToJSONFile, exportToTextFile, checksum };

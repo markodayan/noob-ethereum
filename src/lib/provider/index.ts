@@ -1,9 +1,12 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import range from 'lodash/range';
+
 import * as dotenv from 'dotenv';
 dotenv.config();
 import { hexify } from '@lib/utils/conversion';
 import { exportToJSONFile } from '@lib/utils/export';
 import { LONDON_HARDFORK_BLOCK } from '@src/constants';
+import { utils } from '@src/index';
 
 interface ISeedBlock {
   blockNumber: number;
@@ -143,6 +146,60 @@ class Provider extends HttpClient {
     }
 
     exportToJSONFile(block, num.toString(), path);
+  }
+
+  public async prepareBlockRangeQuery(starting: number, total: number) {
+    const currentHead = utils.decimal((await this.getLatestBlock(false)).number);
+    const startBlock = utils.decimal((await this.getBlockByNumber(starting, true)).number);
+
+    if (startBlock + total > currentHead) {
+      throw new Error('Range provided includes blocks that have not been added to the chain yet!');
+    }
+
+    return range(startBlock, startBlock + total, 1);
+  }
+
+  /* Fetch array block transactions in tuple form over a range of blocks (tuple includes stringified array of block number, transaction index, transaction hash) */
+  public async fetchTransactionsOverBlockRange(startingBlock: number, total: number) {
+    const blockNumberArr = await this.prepareBlockRangeQuery(startingBlock, total);
+    const txHashArr: any[][] = [];
+
+    const fetchBlockClosure = async (n: number, i: number) => {
+      const { transactions } = await this.getBlockByNumber(n, true);
+      txHashArr[i] = [];
+      (transactions as RawTransactions).map((t: RawTransaction) => {
+        txHashArr[i].push([n, utils.decimal(t.transactionIndex), t.hash].toString());
+      });
+    };
+
+    await Promise.all(blockNumberArr.map((n: any, i: number) => fetchBlockClosure(n, i)));
+    console.log('tx array length:', txHashArr.length);
+    return txHashArr as any;
+  }
+
+  /* Go over a specified number of blocks are return transaction tuples that match the from and to transacction fields  */
+  public async fetchTransactionsOverBlocksByInteraction(
+    startingBlock: number,
+    total: number,
+    from: string,
+    to: string
+  ) {
+    const blockNumberArr = await this.prepareBlockRangeQuery(startingBlock, total);
+    const txHashArr: any[][] = [];
+
+    const fetchBlockClosure = async (n: number, i: number) => {
+      const { transactions } = await this.getBlockByNumber(n, true);
+      txHashArr[i] = [];
+      (transactions as RawTransactions).map((t: RawTransaction) => {
+        if (t.from === from && t.to === to) {
+          txHashArr[i].push([n, utils.decimal(t.transactionIndex), t.hash].toString());
+        }
+      });
+    };
+
+    await Promise.all(blockNumberArr.map((n: any, i: number) => fetchBlockClosure(n, i)));
+    console.log('tx array length:', txHashArr.length);
+    return txHashArr as any;
   }
 }
 
