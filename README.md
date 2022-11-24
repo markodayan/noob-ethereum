@@ -48,13 +48,14 @@ npm i noob-ethereum
 
 ## Provider Use
 
-You can instantiate a provider (using the `'infura'` or `'alchemy'` 1st argument followed by your API key from whichever
-service):
+You can instantiate a provider as shown below (you will require a JSON-RPC endpoint which you can get from your full
+node or a JSON-RPC provider like Alchemy, Infura etc):
 
 ```typescript
 import { Provider } from 'noob-ethereum';
 
-const { provider } = new Provider('infura', process.env.INFURA_PROJECT_ID);
+// Insert RPC URL as argument (e.g. http://localhost:8545 for full node, or any Alchemy or Infura endpoint)
+const { provider } = new Provider('<RPC-URL>');
 
 /* Fetch latest block */
 const block = await provider.getLatestBlock();
