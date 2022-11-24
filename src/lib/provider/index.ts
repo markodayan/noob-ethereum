@@ -16,12 +16,12 @@ declare module 'axios' {
 
 abstract class HttpClient {
   protected readonly instance: AxiosInstance;
-  public baseURL: string;
+  public url: string;
 
-  public constructor(baseURL: string) {
-    this.baseURL = baseURL;
+  public constructor(url: string) {
+    this.url = url;
     this.instance = axios.create({
-      baseURL,
+      baseURL: url,
     });
 
     this._initializeResponseInterceptor();
@@ -45,23 +45,16 @@ const config = {
 class Provider extends HttpClient {
   private static instance: Provider;
   protected readonly config: { headers: { 'Content-Type': string } };
-  public company: string;
+  public url: string;
 
-  private constructor(company: string, key: string) {
-    const url =
-      company === 'infura'
-        ? `https://mainnet.infura.io/v3/${key}#
-`
-        : `https://eth-mainnet.alchemyapi.io/v2/${key}`;
-
+  private constructor(url: string) {
     super(url);
     this.config = config;
-    this.company = company;
   }
 
-  public static getInstance(company: string, key: string): Provider {
+  public static getInstance(url?: string): Provider {
     if (!this.instance) {
-      this.instance = new Provider(company, key);
+      this.instance = new Provider(url!);
     }
 
     return this.instance;
@@ -84,7 +77,7 @@ class Provider extends HttpClient {
     }
 
     const res = await this.instance.post(
-      this.company === 'infura' ? 'eth_getBlockByNumber' : '',
+      '',
       {
         jsonrpc: '2.0',
         method: 'eth_getBlockByNumber',
@@ -109,7 +102,7 @@ class Provider extends HttpClient {
    */
   public async getLatestBlock(verbose = false): Promise<IRawBlock> {
     const res = await this.instance.post(
-      this.company === 'infura' ? 'eth_getBlockByNumber' : '',
+      '',
       {
         jsonrpc: '2.0',
         method: 'eth_getBlockByNumber',
@@ -159,12 +152,8 @@ class Provider extends HttpClient {
 class ProviderClientInterface {
   public provider: Provider;
 
-  constructor(company: string, key: string) {
-    if (!['infura', 'alchemy'].includes(company)) {
-      throw new Error(`Must supply either 'infura' or 'alchemy' as company name argument to instantiate the provider`);
-    }
-
-    this.provider = Provider.getInstance(company, key);
+  constructor(url: string) {
+    this.provider = Provider.getInstance(url);
   }
 }
 
