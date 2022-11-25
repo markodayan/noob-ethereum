@@ -7,6 +7,7 @@ const { provider } = new Provider(process.env.INFURA_URL as string);
 
 // Optimism Sequencer EOA: 0x6887246668a3b87F54DeB3b94Ba47a6f63F32985
 // CTC contract: 0x5E4e65926BA27467555EB562121fac00D24E9dD2
+const REGENSIS_BLOCK = 13_597_529;
 const sequencer = '0x6887246668a3b87F54DeB3b94Ba47a6f63F32985'.toLowerCase();
 const ctc = '0x5E4e65926BA27467555EB562121fac00D24E9dD2'.toLowerCase();
 
@@ -38,9 +39,9 @@ const ctc = '0x5E4e65926BA27467555EB562121fac00D24E9dD2'.toLowerCase();
 // });
 
 // 400 blocks for searching for sequencer txs from block 16_018_521
-provider.fetchTransactionsOverBlocksByInteraction(16_018_521, 400, sequencer, ctc).then((res) => {
-  utils.exportToJSONFile(res, 'sequencer_batch_txs_16_018_521', '/');
-});
+// provider.fetchTransactionsOverBlocksByInteraction(16_018_521, 400, sequencer, ctc).then((res) => {
+//   utils.exportToJSONFile(res, 'sequencer_batch_txs_16_018_521', '/');
+// });
 
 // Seed 400 blocks to txt file (raw)
 // provider.fetchTransactionsOverBlockRange(13_597_529, 400).then((res) => {
@@ -102,6 +103,9 @@ provider.fetchTransactionsOverBlocksByInteraction(16_018_521, 400, sequencer, ct
 
 /////// Full Node Testing ////////
 // 10 000 L1 blocks from regenesis
-provider.fetchTransactionsOverBlocksByInteraction(13_597_529, 10_000, sequencer, ctc).then((res) => {
-  utils.exportToJSONFile(res, 'sequencer_batch_txs_13_597_529', '/');
+// provider.fetchTransactionsOverBlocksByInteraction(13_597_529, 10, sequencer, ctc).then((res) => {
+//   utils.exportToJSONFile(res, 'sequencer_batch_txs_13_597_529', '/');
+// });
+provider.fetchTransactionsOverBlocksByInteraction(REGENSIS_BLOCK, 1000, 400, sequencer, ctc).then((res) => {
+  utils.exportToJSONFile(res, 'sequencer_batch_txs_16_040_746', '/');
 });

@@ -8,3 +8,4 @@ DEV.md
 src/seeder/blocks/1559/*
 src/seeder/blocks/legacy/*
 sequencer*.json
+sample.json

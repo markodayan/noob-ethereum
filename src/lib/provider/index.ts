@@ -1,5 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import range from 'lodash/range';
+import async from 'async';
+import { promisify } from 'util';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -160,7 +162,7 @@ class Provider extends HttpClient {
   }
 
   /* Fetch array block transactions in tuple form over a range of blocks (tuple includes stringified array of block number, transaction index, transaction hash) */
-  public async fetchTransactionsOverBlockRange(startingBlock: number, total: number) {
+  private async _fetchTransactionsOverBlockRange(startingBlock: number, total: number) {
     const blockNumberArr = await this.prepareBlockRangeQuery(startingBlock, total);
     const txHashArr: any[][] = [];
 
@@ -173,19 +175,19 @@ class Provider extends HttpClient {
     };
 
     await Promise.all(blockNumberArr.map((n: any, i: number) => fetchBlockClosure(n, i)));
-    console.log('tx array length:', txHashArr.length);
     return txHashArr as any;
   }
 
   /* Go over a specified number of blocks are return transaction tuples that match the from and to transacction fields  */
-  public async fetchTransactionsOverBlocksByInteraction(
+  private async _fetchTransactionsOverBlocksByInteraction(
     startingBlock: number,
     total: number,
     from: string,
     to: string
   ) {
+    console.log('block:', startingBlock, 'total:', total);
     const blockNumberArr = await this.prepareBlockRangeQuery(startingBlock, total);
-    const txHashArr: any[][] = [];
+    let txHashArr: any[][] = [];
 
     const fetchBlockClosure = async (n: number, i: number) => {
       const { transactions } = await this.getBlockByNumber(n, true);
@@ -198,11 +200,104 @@ class Provider extends HttpClient {
     };
 
     await Promise.all(blockNumberArr.map((n: any, i: number) => fetchBlockClosure(n, i)));
-    console.log('tx array length:', txHashArr.length);
+
+    // Filter all the blocks that did not have those interactions
+    txHashArr = txHashArr.filter((arr) => arr.length !== 0);
+
     return txHashArr as any;
   }
-}
 
+  // Process and handle millions of requests for ALL block transactions
+  public async fetchTransactionsOverBlockRange(startingBlock: number, total: number, limit: number) {
+    const CONCURRENT_LIMIT = limit;
+    const start = Date.now();
+    let result: any[][] = [];
+    let params = await this.prepareBlockRangeQuery(startingBlock, total);
+    let finalGroup: number[] = [];
+    let progress = 0;
+
+    const concGroupSize = Math.floor(params.length / CONCURRENT_LIMIT);
+
+    if (params.length % CONCURRENT_LIMIT !== 0) {
+      const sliceParam = -params.length % CONCURRENT_LIMIT;
+      finalGroup = [...params.slice(sliceParam)];
+      params = [...params.slice(0, sliceParam)];
+      console.log('params.length:', params.length);
+      console.log('finalGroup.length:', finalGroup.length);
+    }
+
+    for (let i = 0; i < params.length; i += CONCURRENT_LIMIT) {
+      const arr = await this._fetchTransactionsOverBlockRange(startingBlock + i, CONCURRENT_LIMIT);
+      result = result.concat(arr);
+      progress += CONCURRENT_LIMIT;
+      console.log(
+        'Blocks downloaded:',
+        `${progress}/${total}`,
+        '| Progress:',
+        ((100 * progress) / total).toFixed(1) + '%' + ' | ' + 'elapsed time: ',
+        utils.minutes(Date.now() - start)
+      );
+    }
+
+    if (finalGroup.length > 0) {
+      const arr = await this._fetchTransactionsOverBlockRange(finalGroup[0], finalGroup.length);
+      result = result.concat(arr);
+    }
+
+    console.log('group length:', concGroupSize);
+    console.log('final group length:', finalGroup.length);
+
+    return result;
+  }
+
+  public async fetchTransactionsOverBlocksByInteraction(
+    startingBlock: number,
+    total: number,
+    limit: number,
+    from: string,
+    to: string
+  ) {
+    const CONCURRENT_LIMIT = limit;
+    const start = Date.now();
+    let result: any[][] = [];
+    let params = await this.prepareBlockRangeQuery(startingBlock, total);
+    let finalGroup: number[] = [];
+    let progress = 0;
+
+    const concGroupSize = Math.floor(params.length / CONCURRENT_LIMIT);
+
+    if (params.length % CONCURRENT_LIMIT !== 0) {
+      const sliceParam = -params.length % CONCURRENT_LIMIT;
+      finalGroup = [...params.slice(sliceParam)];
+      params = [...params.slice(0, sliceParam)];
+      console.log('params.length:', params.length);
+      console.log('finalGroup.length:', finalGroup.length);
+    }
+
+    for (let i = 0; i < params.length; i += CONCURRENT_LIMIT) {
+      const arr = await this._fetchTransactionsOverBlocksByInteraction(startingBlock + i, CONCURRENT_LIMIT, from, to);
+      result = result.concat(arr);
+      progress += CONCURRENT_LIMIT;
+      console.log(
+        'Blocks downloaded:',
+        `${progress}/${total}`,
+        '| Progress:',
+        ((100 * progress) / total).toFixed(1) + '%' + ' | ' + 'elapsed time: ',
+        utils.minutes(Date.now() - start)
+      );
+    }
+
+    if (finalGroup.length > 0) {
+      const arr = await this._fetchTransactionsOverBlocksByInteraction(finalGroup[0], finalGroup.length, from, to);
+      result = result.concat(arr);
+    }
+
+    console.log('group length:', concGroupSize);
+    console.log('final group length:', finalGroup.length);
+
+    return result;
+  }
+}
 /*
  * Class that the developer will instantiate supplying provider name
  */

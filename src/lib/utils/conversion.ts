@@ -62,4 +62,10 @@ function toGwei(exp: string | number | undefined, from: 'wei' | 'ether'): number
   }
 }
 
-export { hexify, decimal, toISO, toGwei };
+function minutes(ms: number): string {
+  const m = Math.floor(ms / 60000);
+  const s: number = +((ms % 60000) / 1000).toFixed(0);
+  return `${m}:${s < 10 ? '0' : ''}${s}`;
+}
+
+export { hexify, decimal, toISO, toGwei, minutes };

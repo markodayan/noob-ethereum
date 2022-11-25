@@ -39,6 +39,7 @@
   "license": "ISC",
   "dependencies": {
     "@ethereumjs/trie": "^5.0.0-beta.1",
+    "async": "^3.2.4",
     "axios": "^0.27.2",
     "dotenv": "^16.0.1",
     "ethereumjs-util": "^7.1.5",
@@ -50,6 +51,7 @@
     "tsconfig-paths": "^4.0.0"
   },
   "devDependencies": {
+    "@types/async": "^3.2.15",
     "@types/axios": "^0.14.0",
     "@types/jest": "^28.1.4",
     "@types/keccak": "^3.0.1",
