@@ -1,6 +1,5 @@
 /** Only attempt this with a full node */
 import { Provider, utils } from '@src/index';
-import async from 'async';
 
 const { provider } = new Provider(process.env.INFURA_URL as string);
 

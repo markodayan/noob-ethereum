@@ -242,6 +242,14 @@ class Provider extends HttpClient {
     if (finalGroup.length > 0) {
       const arr = await this._fetchTransactionsOverBlockRange(finalGroup[0], finalGroup.length);
       result = result.concat(arr);
+      progress += finalGroup.length;
+      console.log(
+        'Blocks downloaded:',
+        `${progress}/${total}`,
+        '| Progress:',
+        ((100 * progress) / total).toFixed(1) + '%' + ' | ' + 'elapsed time: ',
+        utils.minutes(Date.now() - start)
+      );
     }
 
     console.log('group length:', concGroupSize);
@@ -290,6 +298,14 @@ class Provider extends HttpClient {
     if (finalGroup.length > 0) {
       const arr = await this._fetchTransactionsOverBlocksByInteraction(finalGroup[0], finalGroup.length, from, to);
       result = result.concat(arr);
+      progress += finalGroup.length;
+      console.log(
+        'Blocks downloaded:',
+        `${progress}/${total}`,
+        '| Progress:',
+        ((100 * progress) / total).toFixed(1) + '%' + ' | ' + 'elapsed time: ',
+        utils.minutes(Date.now() - start)
+      );
     }
 
     console.log('group length:', concGroupSize);

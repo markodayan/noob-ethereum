@@ -4,3 +4,4 @@ assets
 .github
 .vscode
 management
+sequencer*.json
