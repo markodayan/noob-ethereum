@@ -33,5 +33,5 @@
     },
     "typeRoots": ["./node_modules/@types", "./@types"]
   },
-  "exclude": ["dist", "junk", "seeder/**/*"]
+  "exclude": ["dist", "junk", "seeder/**/*", "sequencer*.json"]
 }
