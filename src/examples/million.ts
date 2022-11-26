@@ -13,9 +13,16 @@ const ctc = '0x5E4e65926BA27467555EB562121fac00D24E9dD2'.toLowerCase();
 //   console.log('arr.length (should be 10000):', res.length);
 // });
 
-provider.fetchTransactionsOverBlocksByInteraction(REGENSIS_BLOCK, 500, 37, sequencer, ctc).then((res) => {
-  utils.exportToJSONFile(res, 'sequencer_500_from_regen', '/');
-});
+// provider.fetchTransactionsOverBlocksByInteraction(REGENSIS_BLOCK, 500, 37, sequencer, ctc).then((res) => {
+//   utils.exportToJSONFile(res, 'sequencer_500_from_regen', '/');
+// });
+
 // provider.fetchTransactionsOverBlocksByInteraction(REGENSIS_BLOCK, 2_900_000, 100, sequencer, ctc).then((res) => {
 //   utils.exportToJSONFile(res, 'sequencer_1000_from_regen', '/');
 // });
+
+import file from '../../sequencer_10000_from_regen.json';
+// fetch the transaction receipts for this collection of sequencer transactions
+provider.fetchBatchReceipts(file, 40).then((res) => {
+  utils.exportToJSONFile(res, 'sequencer_receipts_10000', '/');
+});

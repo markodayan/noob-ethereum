@@ -1,13 +1,11 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import range from 'lodash/range';
-import async from 'async';
-import { promisify } from 'util';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
-import { hexify } from '@lib/utils/conversion';
+
 import { exportToJSONFile } from '@lib/utils/export';
-import { LONDON_HARDFORK_BLOCK } from '@src/constants';
+import { LONDON_HARDFORK_BLOCK, optimism } from '@src/constants';
 import { utils } from '@src/index';
 
 interface ISeedBlock {
@@ -86,7 +84,7 @@ class Provider extends HttpClient {
       {
         jsonrpc: '2.0',
         method: 'eth_getBlockByNumber',
-        params: [hexify(blockNumber), verbose],
+        params: [utils.hexify(blockNumber), verbose],
         id: 0,
       },
       this.config
@@ -113,6 +111,27 @@ class Provider extends HttpClient {
         method: 'eth_getBlockByNumber',
         params: ['latest', verbose],
         id: 0,
+      },
+      this.config
+    );
+
+    const { result } = res.data;
+    return result;
+  }
+
+  /**
+   * Fetch transaction receipt by transaction hash
+   * @param {string} hash - transaction hash
+   * @returns {Promise<IRawBlock>}
+   */
+  public async getTransactionReceipt(hash: string): Promise<IRawBlock> {
+    const res = await this.instance.post(
+      '',
+      {
+        jsonrpc: '2.0',
+        method: 'eth_getTransactionReceipt',
+        params: [hash],
+        id: 1,
       },
       this.config
     );
@@ -150,7 +169,7 @@ class Provider extends HttpClient {
     exportToJSONFile(block, num.toString(), path);
   }
 
-  public async prepareBlockRangeQuery(starting: number, total: number) {
+  private async _prepareBlockRangeQuery(starting: number, total: number) {
     const currentHead = utils.decimal((await this.getLatestBlock(false)).number);
     const startBlock = utils.decimal((await this.getBlockByNumber(starting, true)).number);
 
@@ -161,9 +180,25 @@ class Provider extends HttpClient {
     return range(startBlock, startBlock + total, 1);
   }
 
+  private async _fetchFullTransactionBodies(startingBlock: number, total: number) {
+    const blockNumberArr = await this._prepareBlockRangeQuery(startingBlock, total);
+    const txHashArr: any[][] = [];
+
+    const fetchBlockClosure = async (n: number, i: number) => {
+      const { transactions } = await this.getBlockByNumber(n, true);
+      txHashArr[i] = [];
+      (transactions as RawTransactions).map((t: RawTransaction) => {
+        txHashArr[i].push(t.toString());
+      });
+    };
+
+    await Promise.all(blockNumberArr.map((n: any, i: number) => fetchBlockClosure(n, i)));
+    return txHashArr as any;
+  }
+
   /* Fetch array block transactions in tuple form over a range of blocks (tuple includes stringified array of block number, transaction index, transaction hash) */
   private async _fetchTransactionsOverBlockRange(startingBlock: number, total: number) {
-    const blockNumberArr = await this.prepareBlockRangeQuery(startingBlock, total);
+    const blockNumberArr = await this._prepareBlockRangeQuery(startingBlock, total);
     const txHashArr: any[][] = [];
 
     const fetchBlockClosure = async (n: number, i: number) => {
@@ -186,7 +221,7 @@ class Provider extends HttpClient {
     to: string
   ) {
     console.log('block:', startingBlock, 'total:', total);
-    const blockNumberArr = await this.prepareBlockRangeQuery(startingBlock, total);
+    const blockNumberArr = await this._prepareBlockRangeQuery(startingBlock, total);
     let txHashArr: any[][] = [];
 
     const fetchBlockClosure = async (n: number, i: number) => {
@@ -212,7 +247,7 @@ class Provider extends HttpClient {
     const CONCURRENT_LIMIT = limit;
     const start = Date.now();
     let result: any[][] = [];
-    let params = await this.prepareBlockRangeQuery(startingBlock, total);
+    let params = await this._prepareBlockRangeQuery(startingBlock, total);
     let finalGroup: number[] = [];
     let progress = 0;
 
@@ -268,7 +303,7 @@ class Provider extends HttpClient {
     const CONCURRENT_LIMIT = limit;
     const start = Date.now();
     let result: any[][] = [];
-    let params = await this.prepareBlockRangeQuery(startingBlock, total);
+    let params = await this._prepareBlockRangeQuery(startingBlock, total);
     let finalGroup: number[] = [];
     let progress = 0;
 
@@ -313,7 +348,107 @@ class Provider extends HttpClient {
 
     return result;
   }
+
+  private async fetchMultipleRequests(paramsArr: string[]) {
+    const result: any[][] = [];
+
+    const requestClosure = async (hash: string, i: number) => {
+      const res = await this.getTransactionReceipt(hash);
+      const standardized = this._standardizeTransactionReceipt(res);
+      result[i] = [];
+      result[i].push(standardized);
+    };
+
+    await Promise.all(paramsArr.map((hash: string, i: number) => requestClosure(hash, i)));
+
+    return result;
+  }
+
+  public async fetchBatchReceipts(batchArr: any[], limit: number) {
+    let result: any[] = [];
+    const CONCURRENT_LIMIT = limit;
+    const start = Date.now();
+    const total = batchArr.length;
+
+    let arr = batchArr.flat(Infinity).map((x) => {
+      const tuple = x.split(',');
+      return tuple[tuple.length - 1];
+    });
+
+    let progress = 0;
+    let finalRequestBatch: string[] = [];
+
+    if (arr.length % CONCURRENT_LIMIT !== 0) {
+      const param = -arr.length % CONCURRENT_LIMIT;
+      finalRequestBatch = [...arr.slice(param)];
+      arr = [...arr.slice(0, param)];
+      console.log(param);
+      console.log(CONCURRENT_LIMIT);
+      console.log('params.length:', arr.length);
+      console.log('finalGroup.length:', finalRequestBatch.length);
+    }
+
+    for (let i = 0; i < arr.length; i += CONCURRENT_LIMIT) {
+      const res = await this.fetchMultipleRequests(arr.slice(i, i + CONCURRENT_LIMIT));
+      result = [
+        ...result,
+        ...res.flat(2).map((obj, i) => {
+          obj.batchNumber = progress + i + 1;
+          return obj;
+        }),
+      ];
+      progress += CONCURRENT_LIMIT;
+
+      console.log(
+        'Receipts downloaded:',
+        `${progress}/${total}`,
+        '| Progress:',
+        ((100 * progress) / total).toFixed(1) + '%' + ' | ' + 'elapsed time: ',
+        utils.minutes(Date.now() - start)
+      );
+    }
+
+    if (finalRequestBatch.length > 0) {
+      const res = await this.fetchMultipleRequests(finalRequestBatch);
+      result = [
+        ...result,
+        ...res.flat(2).map((obj, i) => {
+          obj.batchNumber = progress + i + 1;
+          return obj;
+        }),
+      ];
+      progress += finalRequestBatch.length;
+
+      console.log(
+        'Receipts downloaded:',
+        `${progress}/${total}`,
+        '| Progress:',
+        ((100 * progress) / total).toFixed(1) + '%' + ' | ' + 'elapsed time: ',
+        utils.minutes(Date.now() - start)
+      );
+    }
+
+    console.log('batches scraped:', total);
+    console.log('group length:', CONCURRENT_LIMIT);
+    console.log('final group length:', finalRequestBatch.length);
+
+    return result;
+  }
+
+  private _standardizeTransactionReceipt(receipt: any) {
+    const effectiveGasPrice = utils.toGwei(receipt.effectiveGasPrice, 'wei') as number;
+    const gasUsed = parseInt(receipt.gasUsed, 16);
+
+    return {
+      transactionHash: receipt.transactionHash,
+      blockNumber: parseInt(receipt.blockNumber, 16),
+      effectiveGasPrice,
+      gasUsed,
+      publicationCost: utils.gweiToEther(gasUsed * effectiveGasPrice),
+    };
+  }
 }
+
 /*
  * Class that the developer will instantiate supplying provider name
  */

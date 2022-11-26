@@ -86,6 +86,23 @@ declare interface Raw1559Transaction {
   value: string;
 }
 
+declare interface IRawTransactionReceipt {
+  blockHash: string;
+  blockNumber: string;
+  contractAddress: string | null;
+  cumulativeGasUsed: string;
+  effectiveGasPrice: string;
+  from: string;
+  gasUsed: string /* important */;
+  logs: any[];
+  logsBloom: string;
+  status: string /* whether transaction successful or threw error */;
+  to: string;
+  transactionHash: string;
+  transactionIndex: string;
+  type: string;
+}
+
 /* Tuple to RLP encode (if before block 12965000)  */
 declare type ILegacyBlockTuple = [
   parentHash: string,

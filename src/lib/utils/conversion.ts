@@ -37,6 +37,10 @@ function toISO(epoch: number): string {
   return new Date(epoch * 1000).toISOString();
 }
 
+function gweiToEther(gwei: number): number {
+  return gwei * Math.pow(10, -9);
+}
+
 function toGwei(exp: string | number | undefined, from: 'wei' | 'ether'): number | null {
   if (typeof exp === 'undefined') return null;
 
@@ -68,4 +72,4 @@ function minutes(ms: number): string {
   return `${m}:${s < 10 ? '0' : ''}${s}`;
 }
 
-export { hexify, decimal, toISO, toGwei, minutes };
+export { hexify, decimal, toISO, toGwei, gweiToEther, minutes };
