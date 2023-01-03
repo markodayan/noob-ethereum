@@ -1,6 +1,6 @@
 {
   "name": "noob-ethereum",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "A simple Ethereum library",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -43,7 +43,6 @@
     "dotenv": "^16.0.1",
     "keccak": "^3.0.2",
     "lodash": "^4.17.21",
-    "rlp": "^3.0.0",
     "ts-node": "^10.8.2",
     "tsconfig-paths": "^4.0.0"
   },
