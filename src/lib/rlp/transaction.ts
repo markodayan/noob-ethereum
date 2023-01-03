@@ -1,8 +1,7 @@
-import { rlp } from 'ethereumjs-util';
-import { utils } from 'ethers';
+import * as rlp from './rlp';
 import createKeccakHash from 'keccak';
 
-import { hexify } from '../utils/conversion';
+import { hexify, hexZeroPad } from '../utils/conversion';
 
 /* ---------------------------- Internal Methods ---------------------------------- */
 
@@ -27,7 +26,7 @@ function toByteArr(field: string) {
   const arr = [];
   const suffix = field.slice(2);
   const byteLength = Math.ceil(suffix.length / 2);
-  const padded = utils.hexZeroPad(field, byteLength).slice(2);
+  const padded = hexZeroPad(field, byteLength).slice(2);
 
   for (let i = 0; i < padded.length; i += 2) {
     arr.push(parseInt(padded.slice(i, i + 2), 16));
@@ -56,14 +55,14 @@ function serialiseTransaction(tx: RawTransaction): Buffer {
       const { nonce, gasPrice, gas, to, value, input, v, r, s } = tx as RawLegacyTransaction;
       const tuple = [nonce, gasPrice, gas, to, value, input, v, r, s];
       const byteTuple = toByteTuple(tuple);
-      return rlp.encode(byteTuple);
+      return Buffer.from(rlp.encode(byteTuple));
     }
     /* EIP-2930 transaction */
     case '0x1': {
       const { chainId, nonce, gasPrice, gas, to, value, input, accessList, v, r, s } = tx as Raw2930Transaction;
       const tuple = [chainId, nonce, gasPrice, gas, to, value, input, accessList, v, r, s];
       const byteTuple = toByteTuple(tuple);
-      const encodedPayload = rlp.encode(byteTuple);
+      const encodedPayload = Buffer.from(rlp.encode(byteTuple));
 
       const type = Buffer.from('01', 'hex');
       return Buffer.concat([type, encodedPayload]);
@@ -75,7 +74,7 @@ function serialiseTransaction(tx: RawTransaction): Buffer {
         tx as Raw1559Transaction;
       const tuple = [chainId, nonce, maxPriorityFeePerGas, maxFeePerGas, gas, to, value, input, accessList, v, r, s];
       const byteTuple = toByteTuple(tuple);
-      const encodedPayload = rlp.encode(byteTuple);
+      const encodedPayload = Buffer.from(rlp.encode(byteTuple));
 
       const type = Buffer.from('02', 'hex');
       return Buffer.concat([type, encodedPayload]);

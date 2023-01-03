@@ -72,4 +72,22 @@ function minutes(ms: number): string {
   return `${m}:${s < 10 ? '0' : ''}${s}`;
 }
 
-export { hexify, decimal, toISO, toGwei, gweiToEther, minutes };
+function hexZeroPad(value: BytesLike, length: number): string {
+  if (typeof value !== 'string') {
+    value = hexify(value as any);
+  } else if (typeof value !== 'string' || !value.match(/^0x[0-9A-Fa-f]*$/)) {
+    throw new Error('invalid hex string');
+  }
+
+  if (value.length > 2 * length + 2) {
+    throw new Error('value out of range');
+  }
+
+  while (value.length < 2 * length + 2) {
+    value = '0x0' + value.substring(2);
+  }
+
+  return value;
+}
+
+export { hexify, decimal, toISO, toGwei, gweiToEther, minutes, hexZeroPad };

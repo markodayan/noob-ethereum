@@ -169,9 +169,13 @@ class Provider extends HttpClient {
     exportToJSONFile(block, num.toString(), path);
   }
 
-  private async _prepareBlockRangeQuery(starting: number, total: number) {
+  private async _prepareBlockRangeQuery(starting: number, total: number | 'latest') {
     const currentHead = utils.decimal((await this.getLatestBlock(false)).number);
     const startBlock = utils.decimal((await this.getBlockByNumber(starting, true)).number);
+
+    if (total === 'latest') {
+      return range(startBlock, currentHead, 1);
+    }
 
     if (startBlock + total > currentHead) {
       throw new Error('Range provided includes blocks that have not been added to the chain yet!');
@@ -243,11 +247,12 @@ class Provider extends HttpClient {
   }
 
   // Process and handle millions of requests for ALL block transactions
-  public async fetchTransactionsOverBlockRange(startingBlock: number, total: number, limit: number) {
+  public async fetchTransactionsOverBlockRange(startingBlock: number, total: number | 'latest', limit: number) {
     const CONCURRENT_LIMIT = limit;
     const start = Date.now();
     let result: any[][] = [];
     let params = await this._prepareBlockRangeQuery(startingBlock, total);
+    const blockTotal = params.length;
     let finalGroup: number[] = [];
     let progress = 0;
 
@@ -267,9 +272,9 @@ class Provider extends HttpClient {
       progress += CONCURRENT_LIMIT;
       console.log(
         'Blocks downloaded:',
-        `${progress}/${total}`,
+        `${progress}/${blockTotal}`,
         '| Progress:',
-        ((100 * progress) / total).toFixed(1) + '%' + ' | ' + 'elapsed time: ',
+        ((100 * progress) / blockTotal).toFixed(1) + '%' + ' | ' + 'elapsed time: ',
         utils.minutes(Date.now() - start)
       );
     }
@@ -280,9 +285,9 @@ class Provider extends HttpClient {
       progress += finalGroup.length;
       console.log(
         'Blocks downloaded:',
-        `${progress}/${total}`,
+        `${progress}/${blockTotal}`,
         '| Progress:',
-        ((100 * progress) / total).toFixed(1) + '%' + ' | ' + 'elapsed time: ',
+        ((100 * progress) / blockTotal).toFixed(1) + '%' + ' | ' + 'elapsed time: ',
         utils.minutes(Date.now() - start)
       );
     }
@@ -295,7 +300,7 @@ class Provider extends HttpClient {
 
   public async fetchTransactionsOverBlocksByInteraction(
     startingBlock: number,
-    total: number,
+    total: number | 'latest',
     limit: number,
     from: string,
     to: string
@@ -304,6 +309,7 @@ class Provider extends HttpClient {
     const start = Date.now();
     let result: any[][] = [];
     let params = await this._prepareBlockRangeQuery(startingBlock, total);
+    const blockTotal = params.length;
     let finalGroup: number[] = [];
     let progress = 0;
 
@@ -323,9 +329,9 @@ class Provider extends HttpClient {
       progress += CONCURRENT_LIMIT;
       console.log(
         'Blocks downloaded:',
-        `${progress}/${total}`,
+        `${progress}/${blockTotal}`,
         '| Progress:',
-        ((100 * progress) / total).toFixed(1) + '%' + ' | ' + 'elapsed time: ',
+        ((100 * progress) / blockTotal).toFixed(1) + '%' + ' | ' + 'elapsed time: ',
         utils.minutes(Date.now() - start)
       );
     }
@@ -336,9 +342,9 @@ class Provider extends HttpClient {
       progress += finalGroup.length;
       console.log(
         'Blocks downloaded:',
-        `${progress}/${total}`,
+        `${progress}/${blockTotal}`,
         '| Progress:',
-        ((100 * progress) / total).toFixed(1) + '%' + ' | ' + 'elapsed time: ',
+        ((100 * progress) / blockTotal).toFixed(1) + '%' + ' | ' + 'elapsed time: ',
         utils.minutes(Date.now() - start)
       );
     }

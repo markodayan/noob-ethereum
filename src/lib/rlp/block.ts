@@ -1,5 +1,5 @@
 import { LONDON_HARDFORK_BLOCK } from '@src/constants';
-import { rlp } from 'ethereumjs-util';
+import * as rlp from './rlp';
 import createKeccakHash from 'keccak';
 
 function prepareBlockTuple(block: IRawBlock): ILegacyBlockTuple | IPost1559Tuple {
@@ -34,7 +34,7 @@ function calculateBlockHeader(block: IRawBlock): string {
   const encoded = rlp.encode(tuple);
 
   // could also do keccak256(encoded).toString('hex') using the ethereum library
-  const calculated = createKeccakHash('keccak256').update(encoded).digest('hex');
+  const calculated = createKeccakHash('keccak256').update(Buffer.from(encoded)).digest('hex');
   return '0x' + calculated;
 }
 
