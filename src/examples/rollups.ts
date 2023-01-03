@@ -1,5 +1,5 @@
 const { Provider, utils } = require('@src/index');
-const { provider } = new Provider('http://localhost:8545');
+const provider = Provider.init('http://localhost:8545');
 
 async function seedOptimismBatches() {
   const REGENSIS_BLOCK = 13_597_529;

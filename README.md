@@ -32,11 +32,10 @@ general) and to provide modules to not re-invent the wheel when dealing with Eth
 
 # What Can I Do?
 
-Currently, you can:
-
-- Provide your own Infura/Alchemy API key and instantiate a provider to fetch a block by number (or the latest).
-- Seed blocks into JSON files for later use.
-- Verify merkle roots for block header or transaction tries.
+- Use either your local full node or Alchemy/Infura for making JSON-RPC queries (and getting sanitised results).
+- Seed blocks or transaction receipts (based on certain conditions).
+- Verify Merkle root integrity and compute Merkle proofs.
+- RLP serialisation utilities
 
 # Getting Started
 
@@ -52,37 +51,42 @@ You can instantiate a provider as shown below (you will require a JSON-RPC endpo
 node or a JSON-RPC provider like Alchemy, Infura etc):
 
 ```typescript
-import { Provider } from 'noob-ethereum';
+import { Provider, Searcher, utils } from 'noob-ethereum';
 
 // Insert RPC URL as argument (e.g. http://localhost:8545 for full node, or any Alchemy or Infura endpoint)
-const { provider } = new Provider('<RPC-URL>');
+const provider = Provider.init('<RPC-URL>');
+// or
+const provider = Provider.init(process.env.INFURA_URL as string);
 
 /* Fetch latest block */
 const block = await provider.getLatestBlock();
 /* Fetch block by number */
-const query = await provider.getBlockByNumber(12_964_760);
+const query = await provider.getBlockByNumber(12_964_760, true);
 
 /* Seed latest block to JSON file (include full transaction objects)  */
 await provider.seedLatestBlock(true, 'src/junk').then();
 
 /* Seed block by number to JSON file (only include transaction hashes - preferable if you are not interested in transaction data) */
 await provider.seedBlockByNumber(false, 12_964_760, 'src/junk').then();
+
+/* Get Ethereum block by number */
+provider.getBlockByNumber(15_447_147, true).then(console.log);
+
+/* Detect for Optimism batch publication from latest block */
+provider.getLatestBlock(true).then((res) => {
+  const sequencer = '0x6887246668a3b87F54DeB3b94Ba47a6f63F32985'.toLowerCase();
+  const ctc = '0x5E4e65926BA27467555EB562121fac00D24E9dD2'.toLowerCase();
+
+  const batchTxs = Searcher.findTransactionInteraction(res, sequencer, ctc);
+  console.log(`batch tx hashes (from block ${utils.decimal(res.number)})`, batchTxs);
+});
 ```
 
 # Other Dependencies
 
-There are various parts of this repo that leave implementation of lower-level data structures to
-[ethereumjs](https://github.com/ethereumjs/ethereumjs-monorepo) who have done an excellent job, this includes:
-
-- Modified trie data structures (if you want to see some trie implementations, I am working on them in this
-  [repository](https://github.com/markodayan/algorithms-etc.git))
-- RLP utilities
-
-The [ethers](https://github.com/ethers-io/ethers.js/) is also used for some minor utilities but we do not make use of
-its provider classes which are implemented from scratch.
-
-The [keccak](https://github.com/cryptocoinjs/keccak) package is used to access the specific SHA-3 hashing function used
-in Ethereum.
+This library aims to be as local as possible, hence dependencies are kept to a minimum, the wheel is only re-invented
+where it is determined to be relevant. Stuff like cryptographic hash functions like SHA3 (keccak256) are best left to
+the professionals hence it is required as a dependency here.
 
 <br />
 

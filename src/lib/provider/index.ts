@@ -1,6 +1,6 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import range from 'lodash/range';
 
+import { HttpClient } from '@src/abstract/http';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -11,32 +11,6 @@ import { utils } from '@src/index';
 interface ISeedBlock {
   blockNumber: number;
   path?: string;
-}
-
-declare module 'axios' {
-  type AxiosReponse<T> = Promise<T>;
-}
-
-abstract class HttpClient {
-  protected readonly instance: AxiosInstance;
-  public url: string;
-
-  public constructor(url: string) {
-    this.url = url;
-    this.instance = axios.create({
-      baseURL: url,
-    });
-
-    this._initializeResponseInterceptor();
-  }
-
-  private _initializeResponseInterceptor(): void {
-    this.instance.interceptors.response.use(this._handleResponse, this._handleError);
-  }
-
-  private _handleResponse = (data: AxiosResponse) => data;
-
-  protected _handleError = (error: Error) => Promise.reject(error);
 }
 
 const config = {
@@ -55,7 +29,7 @@ class Provider extends HttpClient {
     this.config = config;
   }
 
-  public static getInstance(url?: string): Provider {
+  public static init(url?: string): Provider {
     if (!this.instance) {
       this.instance = new Provider(url!);
     }
@@ -455,15 +429,4 @@ class Provider extends HttpClient {
   }
 }
 
-/*
- * Class that the developer will instantiate supplying provider name
- */
-class ProviderClientInterface {
-  public provider: Provider;
-
-  constructor(url: string) {
-    this.provider = Provider.getInstance(url);
-  }
-}
-
-export default ProviderClientInterface;
+export { Provider };
