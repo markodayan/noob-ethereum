@@ -1,6 +1,6 @@
 {
   "name": "noob-ethereum",
-  "version": "2.0.28",
+  "version": "3.0.0",
   "description": "A simple Ethereum library",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
