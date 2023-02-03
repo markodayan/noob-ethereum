@@ -6,8 +6,12 @@ import {
   calculateBlockTransactionHashes,
 } from './transaction';
 import { calculateBlockHeader, verifyBlockHeader } from './block';
+import { encode, decode } from './rlp';
 
 export {
+  /* RLP serialisation transformation */
+  encode,
+  decode,
   /* Transaction RLP methods */
   serialiseTransaction,
   serialiseTransactions,

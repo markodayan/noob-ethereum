@@ -72,6 +72,32 @@ class Provider extends HttpClient {
     return result;
   }
 
+  public async getLogs(address: string, topics: string[], blockHash: string): Promise<RawTransactionLogItem[]> {
+    const res = await this.instance.post(
+      '',
+      {
+        jsonrpc: '2.0',
+        method: 'eth_getLogs',
+        params: [
+          {
+            address,
+            topics,
+            blockHash,
+          },
+        ],
+        id: 0,
+      },
+      this.config
+    );
+
+    if (res.data.error?.code) {
+      throw new Error(res.data.error.code);
+    }
+
+    const { result } = res.data;
+    return result;
+  }
+
   /**
    * Fetch latest raw block via JSON-RPC
    * @param {boolean} verbose - true
@@ -98,7 +124,7 @@ class Provider extends HttpClient {
    * @param {string} hash - transaction hash
    * @returns {Promise<IRawBlock>}
    */
-  public async getTransactionReceipt(hash: string): Promise<IRawBlock> {
+  public async getTransactionReceipt(hash: string): Promise<RawTransactionReceipt> {
     const res = await this.instance.post(
       '',
       {
@@ -109,6 +135,10 @@ class Provider extends HttpClient {
       },
       this.config
     );
+
+    if (res.data.error?.code) {
+      throw new Error(res.data.error.code);
+    }
 
     const { result } = res.data;
     return result;

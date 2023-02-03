@@ -141,3 +141,32 @@ declare type IPost1559Tuple = [
   nonce: string,
   baseFeePerGas: string
 ];
+
+declare interface RawTransactionReceipt {
+  blockHash: string;
+  blockNumber: string;
+  contractAddress: string | null;
+  cumulativeGasUsed: string;
+  effectiveGasPrice: string;
+  from: string;
+  gasUsed: string;
+  logs: RawTransactionLogItem[];
+  logsBloom: string;
+  status: string;
+  to: string;
+  transactionHash: string;
+  transactionIndex: string;
+  type: string;
+}
+
+declare interface RawTransactionLogItem {
+  address: string;
+  blockHash: string;
+  blockNumber: string;
+  data: string;
+  logIndex: string;
+  removed: boolean;
+  topics: string[];
+  transactionHash: string;
+  transactionIndex: string;
+}
